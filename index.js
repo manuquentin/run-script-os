@@ -20,15 +20,20 @@ if (process.env.RUN_OS_WINBASH_IS_LINUX) {
 
 const scripts = require(path.join(process.cwd(), "package.json")).scripts;
 const currentScript = process.env.npm_lifecycle_event;
+const isYarn = process.env.npm_config_user_agent.includes('yarn');
 
 let npmArgs = JSON.parse(process.env["npm_config_argv"]);
 let options = npmArgs.original;
 if (!(options[0] === "run" || options[0] === "run-script")) {
-  options.unshift("run");
+  options.unshift(isYarn ? "" : "run");
+}
+
+if (options[1]) {
+  options[1] = currentScript;
 }
 
 // Check for yarn without install command; fixes #13
-if (process.env.npm_config_user_agent.includes('yarn') && !options[1]) options[1] = 'install';
+if (isYarn && !options[1]) options[1] = 'install';
 
 let osCommand = `${options[1]}:${platform}`;
 let foundMatch = true;
@@ -77,9 +82,9 @@ options[1] = foundMatch ? osCommand : currentScript;
 
 let platformSpecific;
 if (platform === "win32") {
-  platformSpecific = spawn("npm.cmd", options, { shell: true, stdio: "inherit"});
+  platformSpecific = spawn(isYarn ? "yarn" : "npm.cmd", options, { shell: true, stdio: "inherit"});
 } else {
-  platformSpecific = spawn("npm", options, { shell: true, stdio: "inherit" });
+  platformSpecific = spawn(isYarn ? "yarn" :"npm", options, { shell: true, stdio: "inherit" });
 }
 
 platformSpecific.on("exit", (code) => {
