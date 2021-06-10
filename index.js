@@ -80,6 +80,9 @@ if (!foundMatch && options[1] === currentScript) {
 }
 options[1] = foundMatch ? osCommand : currentScript;
 
+// Remove extra options from first command
+options = options.filter(option => option.indexOf('--') !== 0);
+
 let platformSpecific;
 if (platform === "win32") {
   platformSpecific = spawn(isYarn ? "yarn" : "npm.cmd", options, { shell: true, stdio: "inherit"});
