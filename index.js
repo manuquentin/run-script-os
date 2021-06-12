@@ -24,7 +24,7 @@ const isYarn = process.env.npm_config_user_agent.includes('yarn');
 
 let npmArgs = JSON.parse(process.env["npm_config_argv"]);
 let options = npmArgs.original;
-if (!(options[0] === "run" || options[0] === "run-script")) {
+if (!(options[0] === "run" || options[0] === "run-script-fixed")) {
   options.unshift(isYarn ? "" : "run");
 }
 
