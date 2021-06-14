@@ -28,15 +28,17 @@ if (!(options[0] === "run" || options[0] === "run-script-fixed")) {
   options.unshift(isYarn ? "" : "run");
 }
 
+console.log('run-script-command begin, npmArgs: ' + JSON.stringify(npmArgs) + ', options: ' + JSON.stringify(options) );
+
 if (options[1]) {
   options[1] = currentScript;
 }
 
-// Check for yarn without install command; fixes #13
-if (isYarn && !options[1]) options[1] = 'install';
-
 // Remove extra options from first command
 options = options.filter(option => option.indexOf('--') !== 0);
+
+// Check for yarn without install command; fixes #13
+if (isYarn && !options[1]) options[1] = 'install';
 
 let osCommand = `${options[1]}:${platform}`;
 let foundMatch = true;
@@ -52,6 +54,8 @@ if (!(osCommand in scripts)) {
     }
   }
 }
+
+console.log('run-script-command checking, options: ' + JSON.stringify(options) );
 
 // Check for :windows alias; fixes #3
 if (!foundMatch && (`${options[1]}:windows` in scripts) && platform === 'win32') {
@@ -79,11 +83,10 @@ if (!foundMatch && (`${options[1]}:default` in scripts)) {
 
 if (!foundMatch && options[1] === currentScript) {
   // Avoid to run loop on script when not found
+  console.error('run-script-command no command found, exiting.');
   process.exit(0);
 }
 options[1] = foundMatch ? osCommand : currentScript;
-
-
 
 console.log('run-script-command: ' + osCommand + ', options: ' + JSON.stringify(options) + ', (currentScript: ' + currentScript + ', foundMatch: ' + foundMatch + ', platform: ' + platform + ')');
 
