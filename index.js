@@ -35,6 +35,9 @@ if (options[1]) {
 // Check for yarn without install command; fixes #13
 if (isYarn && !options[1]) options[1] = 'install';
 
+// Remove extra options from first command
+options = options.filter(option => option.indexOf('--') !== 0);
+
 let osCommand = `${options[1]}:${platform}`;
 let foundMatch = true;
 
@@ -80,10 +83,9 @@ if (!foundMatch && options[1] === currentScript) {
 }
 options[1] = foundMatch ? osCommand : currentScript;
 
-// Remove extra options from first command
-options = options.filter(option => option.indexOf('--') !== 0);
 
-console.log('run-script-command: ' + osCommand + ', options: ' + JSON.stringify(options), + '(currentScript: ' + currentScript + ', foundMatch: ' + foundMatch + ')');
+
+console.log('run-script-command: ' + osCommand + ', options: ' + JSON.stringify(options) + ', (currentScript: ' + currentScript + ', foundMatch: ' + foundMatch + ', platform: ' + platform + ')');
 
 let platformSpecific;
 if (platform === "win32") {
