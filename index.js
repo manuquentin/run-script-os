@@ -38,7 +38,7 @@ if (options[1]) {
 options = options.filter(option => option.indexOf('--') !== 0);
 
 // Check for yarn without install command; fixes #13
-if (isYarn && !options[1]) options[1] = 'install';
+if (isYarn && !options[1]) options[1] = currentScript;
 
 let osCommand = `${options[1]}:${platform}`;
 let foundMatch = true;
